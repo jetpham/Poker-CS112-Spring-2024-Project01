@@ -45,21 +45,10 @@ After the first two cards have been dealt and the first round of betting, the De
 
 After the second round of betting, a winner is determined.
 
-- Three-of-a-kind beat any other hand. If more than one player has three-of-a-kind, then the
-    player with the higher card value wins.
-- The next highest hand is a pair (two cards with the same value). If more than one player has a
-    pair, the pair with the highest card value wins (ignoring the third card). If two players have pairs
-    with matching values, then the values of only those players' remaining cards are compared, and
-    the higher card wins. If all three cards match, then the two players are both winners and split
-    the winnings.
-- If no player has a pair, then the player with the highest card wins. If more than one player has
-    the same highest card, then those players only compare their second-highest (and third-highest
-    if necessary) cards to determine the round's winner.
-- One more rule to keep things fun: the player who wins the poker hand only wins half the pot!
-    The other half of the pot goes to the player with the highest "spade in the hole", that is, the
-    highest face-down card whose suit is Spades. If no player has a Spade "in the hole", then the
-    winner of the poker round wins the entire pot. If the same player wins the poker hand and has
-    the highest spade in the hole, that player wins the entire pot.
+- Three-of-a-kind beat any other hand. If more than one player has three-of-a-kind, then the player with the higher card value wins.
+- The next highest hand is a pair (two cards with the same value). If more than one player has a pair, the pair with the highest card value wins (ignoring the third card). If two players have pairs with matching values, then the values of only those players' remaining cards are compared, and the higher card wins. If all three cards match, then the two players are both winners and split the winnings.
+- If no player has a pair, then the player with the highest card wins. If more than one player has the same highest card, then those players only compare their second-highest (and third-highest if necessary) cards to determine the round's winner.
+- One more rule to keep things fun: the player who wins the poker hand only wins half the pot! The other half of the pot goes to the player with the highest "spade in the hole", that is, the highest face-down card whose suit is Spades. If no player has a Spade "in the hole", then the winner of the poker round wins the entire pot. If the same player wins the poker hand and has the highest spade in the hole, that player wins the entire pot.
 
 ### Reshuffling
 
@@ -67,111 +56,75 @@ The Dealer reshuffles the card deck before every round of play.
 
 ### Betting
 
-Bets must be made in increments of $1. A player is not permitted to bet more money than remains in
-her stack, so a player may be forced to fold. When a player runs out of money, i.e. has no money left to
-ante, then she is out of the game.
+Bets must be made in increments of $1. A player is not permitted to bet more money than remains in her stack, so a player may be forced to fold. When a player runs out of money, i.e. has no money left to ante, then she is out of the game.
 
 ### Betting Zero
 
-A player may bet zero chips on any opening bet. This is a wise bet if the player's hand is not very strong.
-Sometimes, every player in a round will bet $0, and only the ante bets will be claimed by the round's
-winner.
+A player may bet zero chips on any opening bet. This is a wise bet if the player's hand is not very strong. Sometimes, every player in a round will bet $0, and only the ante bets will be claimed by the round's winner.
 
 
 ## Your Program
 
-The instructor has written a Java program that will perform as Dealer. Each of your Poker.java
-programs will communicate with the Dealer over the classroom WiFi network, using Internet Protocol
-(“IP”). Luckily, Java makes it easy to set up this communication.
+The instructor has written a Java program that will perform as Dealer. Each of your Poker.java programs will communicate with the Dealer over the classroom WiFi network, using Internet Protocol (“IP”). Luckily, Java makes it easy to set up this communication.
 
 ### Communication with Sockets
 
 Your Poker.java program should take two command-line arguments:
 
 ```
- IpAddress: IP network of Dealer
- IpPort: IP port number of server
+- IpAddress: IP network of Dealer
+- IpPort: IP port number of server
 ```
-Your program should include something similar to the following code—you need not understand all of
-this code, please simply copy it into your program:
 
-### import java.net.Socket;
-
-### import java.io.IOException;
-
-### import java.io.DataInputStream;
-
-### import java.io.DataOutputStream;
-
-### Socket socket = new Socket(args[0], Integer.parseInt(args[1]));
-
-### DataInputStream dis =
-
-### new DataInputStream(socket.getInputStream());
-
-### DataOutputStream dos =
-
-### new DataOutputStream(socket.getOutputStream());
-
-### private void write(String s) throws IOException {
-
-### dos.writeUTF(s);
-
-### dos.flush();
-
-### }
-
-### private String read() throws IOException {
-
-### return dis.readUTF();
-
-### }
-
-### Your program will read commands from the Dealer by calling read() and looking at the
-
-### returned String. Your program will write responses to the Dealer by calling write(),
-
-### passing in your program's response.
-
-### Please think about where in your program to put the code that creates socket, dis, and
-
-### dos, and the read() and write() methods.
-
+Your program should include something similar to the following code—you need not understand all of this code, please simply copy it into your program:
+```
+import java.net.Socket;
+import java.io.IOException;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+Socket socket = new Socket(args[0], Integer.parseInt(args[1]));
+DataInputStream dis = new DataInputStream(socket.getInputStream());
+DataOutputStream dos =
+new DataOutputStream(socket.getOutputStream());
+private void write(String s) throws IOException {
+    dos.writeUTF(s);
+    dos.flush();
+}
+private String read() throws IOException {
+    return dis.readUTF();
+}
+```
+Your program will read commands from the Dealer by calling read() and looking at the returned String. Your program will write responses to the Dealer by calling write(), passing in your program's response. Please think about where in your program to put the code that creates socket, dis, and dos, and the read() and write() methods.
 
 ### Game Protocol
 
-A protocol is a set of rules by which two (or more) entities interact with each other. Your program will
-communicate with the Dealer by implementing the following protocol. The Dealer will initiate
-communications every time, by sending a command (along with data) to your program. Your program
-should repeatedly try to read from the Dealer. When a command is received, your program interprets it
-and responds. Several commands require a reply. Here are the Dealer commands and required replies:
+A protocol is a set of rules by which two (or more) entities interact with each other. Your program will communicate with the Dealer by implementing the following protocol. The Dealer will initiate communications every time, by sending a command (along with data) to your program. Your program should repeatedly try to read from the Dealer. When a command is received, your program interprets it and responds. Several commands require a reply. Here are the Dealer commands and required replies:
 
+login – whenever your program receives this command, it must reply with
 ```
- login – whenever your program receives this command, it must reply with
 <<your GitHubId>>:<<your avatar name>>
+```
 For example
+```
 StephenCurry:Steph
-Your program may receive the “login” command more than once. You always must reply with
-the same values. Your “avatar” name will be shown on a graphics window, to update everyone
-on the Casino Day game status. Your GitHubId will be known only to the instructor.
- bet1:<<number of chips in your stack>>:<<size of the current pot>>:<<current bet to match or
-beat>>:<<your "hole" card>>:<<your "up" card>>:up:<<first player's "up" card>>:<<second
-player's "up" card>>::etc
+```
+Your program may receive the “login” command more than once. You always must reply with the same values. Your “avatar” name will be shown on a graphics window, to update everyone on the Casino Day game status. Your GitHubId will be known only to the instructor.
+```
+bet1:<<number of chips in your stack>>:<<size of the current pot>>:<<current bet to match or beat>>:<<your "hole" card>>:<<your "up" card>>:up:<<first player's "up" card>>:<<second player's "up" card>>::etc
+```
 For example,
+```
 bet1:208:24:12:KS:10D:up:AS:8H:10D:QD:2C
+```
 Notice that your "up" card is in the list of dealt cards.
-```
-```
 You must reply with one of the following:
+```
 bet:<<amount of your bet for this hand>>
 fold
-```
 ```
 If you do not fold, your bet must be at least as large as the current bet, and no more than $
 larger. A sample response to the above open command could be:
 bet:
-```
-```
 If players who bet after you raise your bet, you will receive another "bet1" command. The
 format will be the same as shown above. Your "hole" card and "up" card values will be the
 same, and the other players' cards will be the same. Your stack will be reduced by your previous
