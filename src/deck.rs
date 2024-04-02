@@ -1,3 +1,5 @@
+use crate::*;
+
 /// Represents a deck of cards.
 struct Deck {
     cards: Vec<Card>,
@@ -17,13 +19,27 @@ impl Deck {
         let mut cards = Vec::new();
         for _ in 0..num_decks {
             for suit in &[Suit::Spade, Suit::Club, Suit::Heart, Suit::Diamond] {
-                for rank in &[Rank::Ace, Rank::King, Rank::Queen, Rank::Jack, Rank::Ten, Rank::Nine, Rank::Eight, Rank::Seven, Rank::Six, Rank::Five, Rank::Four, Rank::Three, Rank::Two] {
+                for rank in &[
+                    Rank::Ace,
+                    Rank::King,
+                    Rank::Queen,
+                    Rank::Jack,
+                    Rank::Ten,
+                    Rank::Nine,
+                    Rank::Eight,
+                    Rank::Seven,
+                    Rank::Six,
+                    Rank::Five,
+                    Rank::Four,
+                    Rank::Three,
+                    Rank::Two,
+                ] {
                     cards.push(Card {
                         rank: *rank,
                         suit: *suit,
                         seen: false,
                     });
-                }s
+                }
             }
         }
         Deck { cards }
@@ -41,7 +57,7 @@ impl Deck {
     /// The probability of drawing the specified card from the deck as a floating-point number between 0.0 and 1.0.
     fn probability_of_drawing(&self, rank: Rank, suit: Option<Suit>) -> f64 {
         let mut matching_cards = 0;
-        
+
         for card in &self.cards {
             if card.rank == rank && !card.seen {
                 if let Some(suit_specified) = suit {
@@ -53,13 +69,13 @@ impl Deck {
                 }
             }
         }
-        
+
         let total_unseen_cards: usize = self.cards.iter().filter(|c| !c.seen).count();
-        
+
         if total_unseen_cards == 0 {
             return 0.0; // To avoid division by zero.
         }
-        
+
         matching_cards as f64 / total_unseen_cards as f64
     }
 

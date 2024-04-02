@@ -1,9 +1,11 @@
+#[derive(Copy, Clone)]
 struct Card {
     rank: Rank,
     suit: Suit,
     seen: bool,
 }
 
+#[derive(Copy, Clone, PartialEq)]
 enum Rank {
     Ace,
     King,
@@ -20,6 +22,7 @@ enum Rank {
     Two,
 }
 
+#[derive(Copy, Clone, PartialEq)]
 enum Suit {
     Spade,
     Club,
@@ -27,12 +30,14 @@ enum Suit {
     Diamond,
 }
 
+#[derive(Copy, Clone)]
 enum HandType {
     ThreeKind,
     TwoPair,
     HighCard,
 }
 
+#[derive(Copy, Clone)]
 enum Bet {
     Bet(u16),
     Fold,
@@ -55,3 +60,5 @@ enum ServerResponse {
     Done(String),
     Misc(String),
 }
+
+pub mod deck;
