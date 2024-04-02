@@ -1,5 +1,6 @@
 use std::io::prelude::*;
 use std::net::TcpStream;
+use std::str::from_utf8;
 
 use anyhow::Context;
 use clap::Parser;
@@ -18,6 +19,8 @@ fn main() -> anyhow::Result<()> {
     let mut buffer = [0; 1500];
     while let Ok(bytes) = stream.read(&mut buffer) {
         // let actual = buffer[0..bytes].clone();
+
+        let response = from_utf8(&buffer)?;
         match todo!() {}
     }
 
