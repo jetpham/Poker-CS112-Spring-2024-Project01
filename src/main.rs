@@ -19,7 +19,7 @@ fn main() -> anyhow::Result<()> {
     let mut stream =
         TcpStream::connect(args.address_pair).context("could not connect to socket")?;
 
-    let mut buffer = [0; 1500];
+    let mut buffer = [0; 1500]; //TCP buffer limit
     while let Ok(bytes) = stream.read(&mut buffer) {
         let Ok(resp) = from_utf8(&buffer) else {
             buffer = [0; 1500];
@@ -35,7 +35,7 @@ fn main() -> anyhow::Result<()> {
                 },
             )) => {
                 stream
-                    .write_all("jetpham:Crusty".as_bytes())
+                    .write_all("jetpham:jet&tao".as_bytes()) //
                     .context("could not write to socket!")?;
             }
             Ok((

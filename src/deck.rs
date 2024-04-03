@@ -45,40 +45,6 @@ impl Deck {
         Deck { cards }
     }
 
-    /// Calculates the probability of drawing a specific card from the deck.
-    ///
-    /// # Arguments
-    ///
-    /// * `rank` - The rank of the card.
-    /// * `suit` - An optional suit of the card. If specified, only cards with the specified suit will be considered.
-    ///
-    /// # Returns
-    ///
-    /// The probability of drawing the specified card from the deck as a floating-point number between 0.0 and 1.0.
-    fn probability_of_drawing(&self, rank: Rank, suit: Option<Suit>) -> f64 {
-        let mut matching_cards = 0;
-
-        for card in &self.cards {
-            if card.rank == rank && !card.seen {
-                if let Some(suit_specified) = suit {
-                    if card.suit == suit_specified {
-                        matching_cards += 1;
-                    }
-                } else {
-                    matching_cards += 1;
-                }
-            }
-        }
-
-        let total_unseen_cards: usize = self.cards.iter().filter(|c| !c.seen).count();
-
-        if total_unseen_cards == 0 {
-            return 0.0; // To avoid division by zero.
-        }
-
-        matching_cards as f64 / total_unseen_cards as f64
-    }
-
     /// Marks a specific card as seen in the deck.
     ///
     /// # Arguments
@@ -112,4 +78,77 @@ impl Deck {
             card.seen = false;
         }
     }
+
+fn evaluate_hand(cards: [Card; 3]) -> u8 {
+    // Array to count occurrences of each rank in the hand
+    let mut ranks_count = [0; 13];
+    
+    // Count occurrences of each rank in the hand
+    for card in cards.iter() {
+        let rank_index = card.rank as usize;
+        ranks_count[rank_index] += 1;
+    }
+
+    // Check for a pair
+    for (i, &count) in ranks_count.iter().enumerate() {
+        if count == 2 {
+            // Pair found, calculate hand value
+            let pair_value = i as u8;
+            let mut hand_value = (pair_value * 13) + 13;
+            
+            // Find the value of the remaining high card
+            for (j, &count) in ranks_count.iter().enumerate() {
+                if count == 1 {
+                    hand_value += j as u8;
+                    break;
+                }
+            }
+            
+            return hand_value;
+        }
+    }
+
+    // Check for three of a kind
+    for (i, &count) in ranks_count.iter().enumerate() {
+        if count == 3 {
+            // Three of a kind found, calculate hand value
+            return 13 + (13 * 13) + i as u8;
+        }
+    }
+
+    // No pair or three of a kind found, evaluate as high card
+    let mut hand_value = 0;
+    for (i, &count) in ranks_count.iter().enumerate().rev() {
+        if count == 1 {
+            hand_value = i as u8;
+            break;
+        }
+    }
+    hand_value
+}
+// Define the Hand struct
+struct Hand {
+    cards: [Card; 3],
+}
+
+impl Hand {
+    // Constructor for creating a new Hand instance
+    fn new(cards: [Card; 3]) -> Self {
+        Hand { cards }
+    }
+}
+
+// Implement PartialOrd and Ord traits for Hand
+impl PartialOrd for Hand {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for Hand {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        // Compare the hand values using evaluate_hand function
+        evaluate_hand(self.cards).cmp(&evaluate_hand(other.cards))
+    }
+}
 }

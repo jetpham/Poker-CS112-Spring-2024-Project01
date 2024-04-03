@@ -9,12 +9,6 @@ use nom::{
     IResult,
 };
 
-struct Card {
-    rank: Rank,
-    suit: Suit,
-    seen: bool,
-}
-
 #[derive(Copy, Clone, PartialEq)]
 enum Rank {
     Ace,
@@ -32,19 +26,17 @@ enum Rank {
     Two,
 }
 
-#[derive(Copy, Clone, PartialEq)]
-enum Suit {
-    Spade,
-    Club,
-    Heart,
-    Diamond,
+#[derive(Copy, Clone, PartialEq, PartialOrd, Ord)]
+struct Card {
+    rank: Rank,
+    seen: bool,
 }
 
-#[derive(Copy, Clone)]
-enum HandType {
-    ThreeKind,
-    TwoPair,
-    HighCard,
+//cards are comparable like card1 < card2
+impl Card { 
+    fn rank(&self) -> Rank {
+        self.rank
+    }
 }
 
 #[derive(Copy, Clone)]
